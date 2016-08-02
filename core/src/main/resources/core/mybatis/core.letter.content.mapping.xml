@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.scot.jieyou.core.dao.ICoreLetterContentDao" >
+  <resultMap id="BaseResultMap" type="com.scot.jieyou.core.entity.LetterContentEntity" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="content" property="content" jdbcType="LONGVARCHAR" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="create_user" property="createUser" jdbcType="BIGINT" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="update_user" property="updateUser" jdbcType="BIGINT" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, content,create_time, create_user, update_time, update_user
+  </sql>
+
+  <select id="selectById" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from jy_letter_content
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+
+
+  <delete id="deleteById" parameterType="java.lang.Long" >
+    delete from jy_letter_content
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+
+  <insert id="insert" parameterType="com.scot.jieyou.core.entity.LetterContentEntity" useGeneratedKeys="true" keyProperty="id">
+    insert into jy_letter_content (id, create_time, create_user, 
+      update_time, update_user, content
+      )
+    values (#{id,jdbcType=BIGINT}, now(), #{createUser,jdbcType=BIGINT},
+      now(), #{updateUser,jdbcType=BIGINT}, #{content,jdbcType=LONGVARCHAR}
+      )
+  </insert>
+
+  <update id="update" parameterType="com.scot.jieyou.core.entity.LetterContentEntity" >
+    update jy_letter_content
+    <set >
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createUser != null" >
+        create_user = #{createUser,jdbcType=BIGINT},
+      </if>
+      <if test="updateTime != null" >
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateUser != null" >
+        update_user = #{updateUser,jdbcType=BIGINT},
+      </if>
+      <if test="content != null" >
+        content = #{content,jdbcType=LONGVARCHAR},
+      </if>
+        update_time = now(),
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+
+   <select id="select" parameterType="com.scot.jieyou.core.entity.LetterContentEntity" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from jy_letter_content
+        where 1=1
+        <if test="id != null">
+            AND id = #{id}
+        </if>
+       <if test="createTime != null" >
+           AND create_time = #{createTime,jdbcType=TIMESTAMP},
+       </if>
+       <if test="createUser != null" >
+           AND create_user = #{createUser,jdbcType=BIGINT},
+       </if>
+       <if test="updateTime != null" >
+           AND update_time = #{updateTime,jdbcType=TIMESTAMP},
+       </if>
+       <if test="updateUser != null" >
+           AND update_user = #{updateUser,jdbcType=BIGINT},
+       </if>
+       <if test="content != null" >
+           AND content = #{content,jdbcType=LONGVARCHAR},
+       </if>
+   </select>
+
+
+</mapper>

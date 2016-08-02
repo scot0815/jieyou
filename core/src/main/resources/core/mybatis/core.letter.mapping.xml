@@ -1,0 +1,309 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.scot.jieyou.core.dao.ICoreLetterDao" >
+  <resultMap id="BaseResultMap" type="com.scot.jieyou.core.entity.LetterEntity" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="title" property="title" jdbcType="VARCHAR" />
+    <result column="initial_id" property="initialId" jdbcType="BIGINT" />
+    <result column="is_initial" property="isInitial" jdbcType="BIT" />
+    <result column="consult_id" property="consultId" jdbcType="BIGINT" />
+    <result column="reply_id" property="replyId" jdbcType="BIGINT" />
+    <result column="content_id" property="contentId" jdbcType="BIGINT" />
+    <result column="letter_type" property="letterType" jdbcType="BIT" />
+    <result column="letter_status" property="letterStatus" jdbcType="BIT" />
+    <result column="disable" property="disable" jdbcType="BIT" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="create_user" property="createUser" jdbcType="BIGINT" />
+    <result column="update_user" property="updateUser" jdbcType="BIGINT" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+
+  <sql id="Base_Column_List" >
+    id, title, initial_id, is_initial, consult_id, reply_id, content_id, letter_type, 
+    letter_status, disable, create_time, create_user, update_user, update_time
+  </sql>
+
+    <sql id="letter_detail">
+          l.id AS id,
+          l.title AS title,
+          l.initial_id AS initialId,
+          l.is_initial AS isInitial,
+          l.consult_id AS consultId,
+          l.reply_id AS replyId,
+          l.content_id AS contentId,
+          lc.content AS content,
+          l.letter_type AS letterType,
+          l.letter_status AS letterStatus,
+          l.disable AS disable,
+          l.create_time AS createTime,
+          l.create_user AS createUser,
+          l.update_time AS updateTime,
+          l.update_user AS updateUser
+    </sql>
+
+  <delete id="deleteById" parameterType="java.lang.Long" >
+    delete from jy_letter
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+
+  <insert id="insert" parameterType="com.scot.jieyou.core.entity.LetterEntity"  useGeneratedKeys="true" keyProperty="id">
+    insert into jy_letter (id, title, initial_id, 
+      is_initial, consult_id, reply_id, 
+      content_id, letter_type, letter_status, 
+      disable, create_time, create_user,
+      update_user, update_time)
+    values (#{id,jdbcType=BIGINT}, #{title,jdbcType=VARCHAR}, #{initialId,jdbcType=BIGINT}, 
+      #{isInitial,jdbcType=BIT}, #{consultId,jdbcType=BIGINT}, #{replyId,jdbcType=BIGINT}, 
+      #{contentId,jdbcType=BIGINT}, #{letterType,jdbcType=BIT}, #{letterStatus,jdbcType=BIT}, 
+      #{disable,jdbcType=BIT}, now(), #{createUser,jdbcType=BIGINT},
+      #{updateUser,jdbcType=BIGINT}, now())
+  </insert>
+
+  <update id="update" parameterType="com.scot.jieyou.core.entity.LetterEntity" >
+    update jy_letter
+    <set>
+      <if test="title != null" >
+        title = #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="initialId != null" >
+        initial_id = #{initialId,jdbcType=BIGINT},
+      </if>
+      <if test="isInitial != null" >
+        is_initial = #{isInitial,jdbcType=BIT},
+      </if>
+      <if test="consultId != null" >
+        consult_id = #{consultId,jdbcType=BIGINT},
+      </if>
+      <if test="replyId != null" >
+        reply_id = #{replyId,jdbcType=BIGINT},
+      </if>
+      <if test="contentId != null" >
+        content_id = #{contentId,jdbcType=BIGINT},
+      </if>
+      <if test="letterType != null" >
+        letter_type = #{letterType,jdbcType=BIT},
+      </if>
+      <if test="letterStatus != null" >
+        letter_status = #{letterStatus,jdbcType=BIT},
+      </if>
+      <if test="disable != null" >
+        disable = #{disable,jdbcType=BIT},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createUser != null" >
+        create_user = #{createUser,jdbcType=BIGINT},
+      </if>
+      <if test="updateUser != null" >
+        update_user = #{updateUser,jdbcType=BIGINT},
+      </if>
+        update_time =now(),
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+
+  <select id="selectById" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select
+    <include refid="Base_Column_List" />
+    from jy_letter
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+
+
+    <select id="select" parameterType="com.scot.jieyou.core.entity.LetterEntity" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from jy_letter
+        where 1=1
+        <if test="id != null">
+            AND id = #{id}
+        </if>
+        <if test="title != null" >
+            AND title = #{title,jdbcType=VARCHAR}
+        </if>
+        <if test="initialId != null" >
+            AND initial_id = #{initialId,jdbcType=BIGINT}
+        </if>
+        <if test="isInitial != null" >
+            AND is_initial = #{isInitial,jdbcType=BIT}
+        </if>
+        <if test="consultId != null" >
+            AND consult_id = #{consultId,jdbcType=BIGINT}
+        </if>
+        <if test="replyId != null" >
+            AND reply_id = #{replyId,jdbcType=BIGINT}
+        </if>
+        <if test="contentId != null" >
+            AND content_id = #{contentId,jdbcType=BIGINT}
+        </if>
+        <if test="letterType != null" >
+            AND letter_type = #{letterType,jdbcType=BIT}
+        </if>
+        <if test="letterStatus != null" >
+            AND letter_status = #{letterStatus,jdbcType=BIT}
+        </if>
+        <if test="disable != null" >
+            AND disable = #{disable,jdbcType=BIT}
+        </if>
+        <if test="createTime != null">
+            AND create_time = #{createTime,jdbcType=TIMESTAMP}
+        </if>
+        <if test="createUser != null">
+            AND create_user = #{createUser,jdbcType=BIGINT}
+        </if>
+        <if test="updateTime != null">
+            AND update_time = #{updateTime,jdbcType=TIMESTAMP}
+        </if>
+        <if test="updateUser != null">
+            AND update_user = #{updateUser,jdbcType=BIGINT}
+        </if>
+    </select>
+
+    <!--查询待认领信件-->
+    <select id="toBeClaim" parameterType="java.lang.Long" resultType="com.scot.jieyou.core.bo.LetterBo">
+        SELECT
+          <include refid="letter_detail" />
+        FROM
+           jy_letter l,
+           jy_letter_content lc
+        WHERE l.content_id = lc.id
+        AND l.is_initial = 1
+        AND l.letter_status = 1
+        AND l.reply_id IS NULL
+        <if test="userId != null">
+            AND l.consult_id != #{userId}
+        </if>
+        ORDER BY l.create_time ASC
+        <if test="limitNumber != null">
+            LIMIT #{limitNumber}
+        </if>
+    </select>
+
+    <!--//回复列表 根据m的信件类型和状态判断是不是要回复
+    //（如果是咨询类型，并且是已回复或者是已认领（最新发起的咨询是已认领状态），为需要回复人回复）
+    // (如果是回复类型，并且是回写中，为需要回复人回复)
+    SELECT
+    *
+    FROM jy_letter b,
+    (SELECT l.initial_id,l.letter_status,l.letter_type FROM jy_letter l ,(
+    SELECT MAX(id) AS id FROM jy_letter WHERE reply_id = 2 GROUP BY initial_id
+    )l1 WHERE l.id = l1.id) m
+    WHERE b.id = m.initial_id AND is_initial=1 AND reply_id = 2-->
+
+    <!--根据ID查询信件详情信息-->
+    <select id="queryDetailById" parameterType="java.lang.Long" resultType="com.scot.jieyou.core.bo.LetterBo">
+        SELECT
+          <include refid="letter_detail" />
+        FROM
+        jy_letter l,
+        jy_letter_content lc
+        WHERE l.content_id = lc.id
+        and l.id = #{id}
+    </select>
+
+    <!--查询回复列表-->
+    <select id="toBeReply" parameterType="com.scot.jieyou.core.entity.LetterEntity" resultType="com.scot.jieyou.core.bo.LetterBo">
+      SELECT
+        <include refid="letter_detail" />,
+        l.maxInitialId AS maxInitialId,
+        l.maxLetterType AS maxLetterType,
+        l.maxLetterStatus AS maxLetterStatus,
+        l.maxUpdateTime AS maxUpdateTime,
+        l.maxContent AS maxContent
+       FROM
+        (SELECT
+            b.id,
+            b.title,
+            b.initial_id,
+            b.is_initial,
+            b.consult_id,
+            b.reply_id,
+            b.content_id,
+            b.letter_type,
+            b.letter_status,
+            b.disable,
+            b.create_time,
+            b.create_user,
+            b.update_user,
+            b.update_time,
+            m.initial_id AS maxInitialId,
+            m.letter_type AS maxLetterType,
+            m.letter_status AS maxLetterStatus,
+            m.update_time AS maxUpdateTime,
+            m.content AS maxContent
+        FROM jy_letter b,
+            (SELECT letter.initial_id,letter.letter_status,letter.letter_type,letter.update_time,content.content
+              FROM jy_letter letter,
+              (SELECT MAX(id) AS id FROM jy_letter WHERE reply_id = 2 GROUP BY initial_id)maxletter,
+              jy_letter_content content
+              WHERE letter.id = maxletter.id AND letter.content_id = content.id) m
+        WHERE b.id = m.initial_id AND is_initial=1 AND reply_id = #{replyId}
+        ) l,jy_letter_content lc WHERE l.content_id = lc.id
+        ORDER BY l.maxUpdateTime DESC
+
+    </select>
+
+    <!--时间轴-->
+    <select id="timeLine" resultType="com.scot.jieyou.core.bo.LetterBo">
+      SELECT
+        <include refid="letter_detail" />
+      FROM
+        jy_letter l,jy_letter_content lc
+      WHERE l.content_id = lc.id
+        AND initial_id = #{initialId} AND l.disable = 0 ORDER BY l.update_time DESC
+    </select>
+
+    <!--获取咨询者信件初始Id-->
+    <select id="queryByConsult" parameterType="java.lang.Long" resultType="java.lang.Long">
+        SELECT
+          initial_id
+        FROM
+          jy_letter
+        WHERE
+          is_initial = 1
+          AND
+          consult_id = #{consultId}
+          AND
+          letter_status != 5 LIMIT 1
+    </select>
+
+    <!--根据初始Id获取最新回复信件-->
+    <select id="queryLastByInitial" parameterType="java.lang.Long" resultType="java.lang.Long">
+         SELECT
+          MAX(id)
+         FROM
+          jy_letter
+          WHERE
+            initial_id = #{initialId}
+    </select>
+
+    <!--咨询者是否收到信件-->
+    <select id="isReceive" parameterType="java.lang.Long" resultType="java.lang.Boolean">
+        SELECT
+          COUNT(id) > 0
+        FROM
+          jy_letter l
+        WHERE
+          l.id = #{id}
+          AND
+          l.letter_type = 2
+          AND
+          l.letter_status = 4
+    </select>
+
+    <!--咨询是否存在-->
+    <select id="consultIsExist" parameterType="java.lang.Long" resultType="java.lang.Boolean">
+        SELECT
+          COUNT(id)>0
+        FROM
+          jy_letter l
+        WHERE
+          l.consult_id = #{consultId}
+          AND
+          l.is_initial = 1
+          AND
+          l.letter_status != 5
+    </select>
+
+</mapper>

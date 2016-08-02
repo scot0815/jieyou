@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.scot.jieyou.core.dao.ICoreUserLoginDao" >
+  <resultMap id="BaseResultMap" type="com.scot.jieyou.core.entity.UserLoginEntity" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="login_name" property="loginName" jdbcType="VARCHAR" />
+    <result column="password" property="password" jdbcType="VARCHAR" />
+    <result column="user_id" property="userId" jdbcType="BIGINT" />
+    <result column="disable" property="disable" jdbcType="BIT" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="create_user" property="createUser" jdbcType="BIGINT" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="update_user" property="updateUser" jdbcType="BIGINT" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, login_name, password, user_id, disable, create_time, create_user, update_time, 
+    update_user
+  </sql>
+
+  <select id="selectById" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from jy_user_login
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+
+
+  <delete id="deleteById" parameterType="java.lang.Long" >
+    delete from jy_user_login
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+
+  <insert id="insert" parameterType="com.scot.jieyou.core.entity.UserLoginEntity" useGeneratedKeys="true" keyProperty="id">
+    insert into jy_user_login (id, login_name, password, 
+      user_id, disable, create_time, 
+      create_user, update_time, update_user
+      )
+    values (#{id,jdbcType=BIGINT}, #{loginName,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, 
+      #{userId,jdbcType=BIGINT}, #{disable,jdbcType=BIT},now(),
+      #{createUser,jdbcType=BIGINT}, now(), #{updateUser,jdbcType=BIGINT}
+      )
+  </insert>
+
+  <update id="update" parameterType="com.scot.jieyou.core.entity.UserLoginEntity" >
+    update jy_user_login
+    <set >
+      <if test="loginName != null" >
+        login_name = #{loginName,jdbcType=VARCHAR},
+      </if>
+      <if test="password != null" >
+        password = #{password,jdbcType=VARCHAR},
+      </if>
+      <if test="userId != null" >
+        user_id = #{userId,jdbcType=BIGINT},
+      </if>
+      <if test="disable != null" >
+        disable = #{disable,jdbcType=BIT},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createUser != null" >
+        create_user = #{createUser,jdbcType=BIGINT},
+      </if>
+      <if test="updateTime != null" >
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateUser != null" >
+        update_user = #{updateUser,jdbcType=BIGINT},
+      </if>
+        update_time = now(),
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+
+    <select id="select" parameterType="com.scot.jieyou.core.entity.UserLoginEntity" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from jy_user_login
+        where 1=1
+        <if test="id != null">
+            AND id = #{id}
+        </if>
+        <if test="loginName != null" >
+            AND login_name = #{loginName,jdbcType=VARCHAR}
+        </if>
+        <if test="password != null" >
+            AND password = #{password,jdbcType=VARCHAR}
+        </if>
+        <if test="userId != null" >
+            AND user_id = #{userId,jdbcType=BIGINT}
+        </if>
+        <if test="disable != null" >
+            AND disable = #{disable,jdbcType=BIT}
+        </if>
+        <if test="createTime != null" >
+            AND create_time = #{createTime,jdbcType=TIMESTAMP}
+        </if>
+        <if test="createUser != null" >
+            AND create_user = #{createUser,jdbcType=BIGINT}
+        </if>
+        <if test="updateTime != null" >
+            AND update_time = #{updateTime,jdbcType=TIMESTAMP}
+        </if>
+        <if test="updateUser != null" >
+            AND update_user = #{updateUser,jdbcType=BIGINT}
+        </if>
+        <if test="disable != null" >
+            AND disable = #{disable,jdbcType=BIT}
+        </if>
+        <if test="createTime != null">
+            AND create_time = #{createTime,jdbcType=TIMESTAMP}
+        </if>
+        <if test="createUser != null">
+            AND create_user = #{createUser,jdbcType=BIGINT}
+        </if>
+        <if test="updateTime != null">
+            AND update_time = #{updateTime,jdbcType=TIMESTAMP}
+        </if>
+        <if test="updateUser != null">
+            AND update_user = #{updateUser,jdbcType=BIGINT}
+        </if>
+    </select>
+
+</mapper>
