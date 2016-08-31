@@ -128,6 +128,11 @@ public class LetterServiceImpl implements ILetterService {
     }
 
     @Override
+    public void letterEnd(Long initialId,Long updateUser) {
+        letterDao.letterEnd(initialId,updateUser);
+    }
+
+    @Override
     public LetterBo queryLetterById(Long letterId) {
         return letterDao.queryDetailById(letterId);
     }
@@ -136,8 +141,8 @@ public class LetterServiceImpl implements ILetterService {
         return letterDao.consultIsExist(consultId);
     }
 
-    public List<LetterBo> toReplyLetter(LetterEntity entity) {
-        return letterDao.toBeReply(entity);
+    public List<LetterBo> toReplyLetter(Integer type,Long userId) {
+        return letterDao.toBeReply(type,userId);
     }
 
     public List<LetterBo> timeLine(long initialId) {

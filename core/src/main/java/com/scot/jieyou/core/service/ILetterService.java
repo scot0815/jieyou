@@ -14,7 +14,7 @@ public interface ILetterService {
 
 
     /**
-     * 根据ID获取新建
+     * 根据ID获取
      * @param letterId
      * @return
      */
@@ -57,10 +57,11 @@ public interface ILetterService {
 
     /**
      * 回复列表
-     * @param entity
+     * @param type 1:咨询 2：回复
+     * @param userId
      * @return
      */
-    public List<LetterBo> toReplyLetter(LetterEntity entity);
+    public List<LetterBo> toReplyLetter(Integer type,Long userId);
 
     /**
      * 时间轴
@@ -96,4 +97,11 @@ public interface ILetterService {
      * @return
      */
     public boolean consultIsExist(Long consultId);
+
+    /**
+     * 信件完结
+     * @param initialId
+     * @param updateUser
+     */
+    public void letterEnd(Long initialId,Long updateUser);
 }

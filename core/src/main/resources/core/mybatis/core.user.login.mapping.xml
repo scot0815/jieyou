@@ -7,13 +7,14 @@
     <result column="password" property="password" jdbcType="VARCHAR" />
     <result column="user_id" property="userId" jdbcType="BIGINT" />
     <result column="disable" property="disable" jdbcType="BIT" />
+    <result column="status" property="status" jdbcType="BIT" />
     <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
     <result column="create_user" property="createUser" jdbcType="BIGINT" />
     <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
     <result column="update_user" property="updateUser" jdbcType="BIGINT" />
   </resultMap>
   <sql id="Base_Column_List" >
-    id, login_name, password, user_id, disable, create_time, create_user, update_time, 
+    id, login_name, password, user_id, disable, status, create_time, create_user, update_time,
     update_user
   </sql>
 
@@ -32,11 +33,11 @@
 
   <insert id="insert" parameterType="com.scot.jieyou.core.entity.UserLoginEntity" useGeneratedKeys="true" keyProperty="id">
     insert into jy_user_login (id, login_name, password, 
-      user_id, disable, create_time, 
+      user_id, disable,status,create_time,
       create_user, update_time, update_user
       )
     values (#{id,jdbcType=BIGINT}, #{loginName,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, 
-      #{userId,jdbcType=BIGINT}, #{disable,jdbcType=BIT},now(),
+      #{userId,jdbcType=BIGINT}, #{disable,jdbcType=BIT},#{status,jdbcType=BIT},now(),
       #{createUser,jdbcType=BIGINT}, now(), #{updateUser,jdbcType=BIGINT}
       )
   </insert>
@@ -55,6 +56,9 @@
       </if>
       <if test="disable != null" >
         disable = #{disable,jdbcType=BIT},
+      </if>
+      <if test="status != null" >
+        status = #{status,jdbcType=BIT},
       </if>
       <if test="createTime != null" >
         create_time = #{createTime,jdbcType=TIMESTAMP},
@@ -93,6 +97,9 @@
         <if test="disable != null" >
             AND disable = #{disable,jdbcType=BIT}
         </if>
+        <if test="status != null" >
+            AND status = #{status,jdbcType=BIT}
+        </if>
         <if test="createTime != null" >
             AND create_time = #{createTime,jdbcType=TIMESTAMP}
         </if>
@@ -103,21 +110,6 @@
             AND update_time = #{updateTime,jdbcType=TIMESTAMP}
         </if>
         <if test="updateUser != null" >
-            AND update_user = #{updateUser,jdbcType=BIGINT}
-        </if>
-        <if test="disable != null" >
-            AND disable = #{disable,jdbcType=BIT}
-        </if>
-        <if test="createTime != null">
-            AND create_time = #{createTime,jdbcType=TIMESTAMP}
-        </if>
-        <if test="createUser != null">
-            AND create_user = #{createUser,jdbcType=BIGINT}
-        </if>
-        <if test="updateTime != null">
-            AND update_time = #{updateTime,jdbcType=TIMESTAMP}
-        </if>
-        <if test="updateUser != null">
             AND update_user = #{updateUser,jdbcType=BIGINT}
         </if>
     </select>

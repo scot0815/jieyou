@@ -1,0 +1,7 @@
+<pre>
+
+	Dear ${0}:
+		感谢您的注册，希望“杂货店”可以给您带来帮助。请点击下面的链接或者复制链接到浏览器进行账号认证。
+		<a href="jieyouzhd.iok.la/authorized?${1}">http://jieyouzhd.iok.la/authorized?${1}</a>
+
+</pre>

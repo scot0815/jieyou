@@ -37,10 +37,11 @@ public interface ICoreLetterDao {
 
     /**
      * 查询回复列表
-     * @param entity
+     * @param type 1:咨询 2：回复
+     * @param userId
      * @return
      */
-    List<LetterBo> toBeReply(LetterEntity entity);
+    List<LetterBo> toBeReply(@Param("type")Integer type,@Param("userId")Long userId);
 
     /**
      * 时间轴
@@ -76,4 +77,7 @@ public interface ICoreLetterDao {
      * @return
      */
     Boolean consultIsExist(@Param("consultId")Long consultId);
+
+    void letterEnd(@Param("initialId")Long initialId,@Param("updateUser")Long updateUser);
+
 }

@@ -9,6 +9,8 @@ import java.util.Map;
  */
 public class CoreConstant {
 
+    public final static String SESSION_USER_ID = "session_user_id";
+
     /**
      * 信件类型
      */
@@ -33,11 +35,11 @@ public class CoreConstant {
    public interface LetterStatus {
         final Map<Integer,String> map = new HashMap<Integer,String>() {
             {
-                put(1,"待认领");
-                put(2,"已认领");
+                put(1,"在路上");
+                put(2,"通信中");
                 put(3,"回写中");
                 put(4,"已回写");
-                put(5,"已结束");
+                put(5,"烦恼消散");
             }
         };
 
@@ -46,6 +48,26 @@ public class CoreConstant {
         Integer TO_WRITE_IN = 3;
         Integer ALREADY_WRITE = 4;
         Integer END = 5;
+
+    }
+
+    /**
+     * 用户状态
+     * 0:未认证 1：已认证 2：禁用
+     */
+    public interface UserStatus {
+
+        final Map<Integer,String> map = new HashMap<Integer,String>() {
+            {
+                put(0,"未认证");
+                put(1,"已认证");
+                put(2,"禁用");
+            }
+        };
+
+        Integer UNAUTHORIZED = 0;
+        Integer AUTHORIZED = 1;
+        Integer DISABLE = 2;
 
     }
 

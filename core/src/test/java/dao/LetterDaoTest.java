@@ -79,13 +79,13 @@ public class LetterDaoTest {
     public void toBeReply() {
         LetterEntity entity = new LetterEntity();
         entity.setReplyId(2l);
-        List<LetterBo> bo = letterDao.toBeReply(entity);
+        List<LetterBo> bo = letterDao.toBeReply(CoreConstant.LetterType.REPLY,2l);
         System.out.println(bo);
     }
 
     @Test
     public void timeLine() {
-        List<LetterBo> bo = letterDao.timeLine(14l);
+        List<LetterBo> bo = letterDao.timeLine(28l);
         System.out.println(bo);
     }
 

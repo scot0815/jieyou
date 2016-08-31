@@ -203,7 +203,7 @@
     </select>
 
     <!--查询回复列表-->
-    <select id="toBeReply" parameterType="com.scot.jieyou.core.entity.LetterEntity" resultType="com.scot.jieyou.core.bo.LetterBo">
+    <select id="toBeReply" resultType="com.scot.jieyou.core.bo.LetterBo">
       SELECT
         <include refid="letter_detail" />,
         l.maxInitialId AS maxInitialId,
@@ -235,10 +235,24 @@
         FROM jy_letter b,
             (SELECT letter.initial_id,letter.letter_status,letter.letter_type,letter.update_time,content.content
               FROM jy_letter letter,
-              (SELECT MAX(id) AS id FROM jy_letter WHERE reply_id = 2 GROUP BY initial_id)maxletter,
+              (SELECT MAX(id) AS id FROM jy_letter WHERE
+               <if test="type == 1">
+                   consult_id = #{userId}
+               </if>
+                <if test="type == 2">
+                    reply_id = #{userId}
+                </if>
+                GROUP BY initial_id)maxletter,
               jy_letter_content content
               WHERE letter.id = maxletter.id AND letter.content_id = content.id) m
-        WHERE b.id = m.initial_id AND is_initial=1 AND reply_id = #{replyId}
+        WHERE b.id = m.initial_id AND is_initial=1
+          AND
+            <if test="type == 1">
+                consult_id = #{userId}
+            </if>
+            <if test="type == 2">
+                reply_id = #{userId}
+            </if>
         ) l,jy_letter_content lc WHERE l.content_id = lc.id
         ORDER BY l.maxUpdateTime DESC
 
@@ -305,5 +319,18 @@
           AND
           l.letter_status != 5
     </select>
+
+    <update id="letterEnd">
+        UPDATE
+          jy_letter
+        SET
+          letter_status = 5,
+          update_time = now(),
+          update_user = #{updateUser}
+        WHERE
+          initial_id = #{initialId}
+          AND
+          disable = 0
+    </update>
 
 </mapper>

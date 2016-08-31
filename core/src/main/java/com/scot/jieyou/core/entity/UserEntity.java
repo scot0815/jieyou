@@ -5,6 +5,8 @@ import java.util.Date;
 public class UserEntity {
     private Long id;
 
+    private String userName;
+
     private String realName;
 
     private Integer qq;
@@ -27,6 +29,14 @@ public class UserEntity {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 
     public String getRealName() {

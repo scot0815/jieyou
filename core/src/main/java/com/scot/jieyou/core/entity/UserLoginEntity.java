@@ -13,6 +13,8 @@ public class UserLoginEntity {
 
     private Boolean disable;
 
+    private Integer status;
+
     private Date createTime;
 
     private Long createUser;
@@ -59,6 +61,14 @@ public class UserLoginEntity {
 
     public void setDisable(Boolean disable) {
         this.disable = disable;
+    }
+
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
     }
 
     public Date getCreateTime() {
