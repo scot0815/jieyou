@@ -33,7 +33,7 @@ if(('webkitSpeechRecognition' in window)){
     },
     listen: function(datos){
       switch(datos){
-        case "dashboard": location.href = "index.html?listen=on"; break;
+        case "dashboard": location.href = "../../index.html"; break;
         case "sidebar": location.href = "layouts-sidebar.html?listen=on"; break;
         case "ui elements": location.href = "ui-elements.html?listen=on"; break;
         case "buttons": location.href = "ui-buttons.html?listen=on"; break;
@@ -56,9 +56,9 @@ if(('webkitSpeechRecognition' in window)){
         case "blank page": location.href = "pages-blank.html?listen=on"; break;
         case "blank page header": location.href = "pages-blank-header.html?listen=on"; break;
         case "login": location.href = "pages-login.html?listen=on"; break;
-        case "404 page": location.href = "pages-404.html?listen=on"; break;
-        case "500 page": location.href = "pages-500.html?listen=on"; break;
-        case "500 page": location.href = "pages-500.html?listen=on"; break;
+        case "404 page": location.href = "../../pages-404.jsp"; break;
+        case "500 page": location.href = "../../pages-500.jsp"; break;
+        case "500 page": location.href = "../../pages-500.jsp"; break;
         default:
           $.gritter.add({title: "Error",text: "Could not find: <strong>" + datos + "</strong> page, Please try again.",image: 'images/mic-icon.png',class_name: 'clean',time: ''});  
         break;

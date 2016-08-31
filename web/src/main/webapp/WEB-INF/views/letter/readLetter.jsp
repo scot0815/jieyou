@@ -50,24 +50,26 @@
 
 <div class="container-fluid" id="pcont">
     <c:set var="url" value="${ctx}/letter/writeView?id=${letter.id}&isReply=${isReply}"/>
-    <div style="float: right">
-            <div style="float: left">
-                <button  type="button" class="btn btn-primary"
-                         onclick="javascript:window.location.href='${url}'" style="margin-top: 5px;">
-                    <i class="fa fa-pencil nav-icon"></i> 回复
-                </button>
-            </div>
-            <c:if test="${!isReply}">
-                <div style="float: right">
+    <c:set var="endUrl" value="${ctx}/letter/letterEnd?initialId=${letter.initialId}"/>
+    <c:if test="${letter.letterStatus != 5}">
+        <div style="float: right">
+                <div style="float: left">
                     <button  type="button" class="btn btn-primary"
-                            onclick=""
-                            style="margin-top: 5px;position:absolute;">
-                        <i class="fa fa-pencil nav-icon"></i> 完结
+                             onclick="javascript:window.location.href='${url}'" style="margin-top: 5px;">
+                        <i class="fa fa-pencil nav-icon"></i> 回复
                     </button>
                 </div>
-            </c:if>
-    </div>
-
+                <c:if test="${!isReply}">
+                    <div style="float: right">
+                        <button  type="button" class="btn btn-primary"
+                                onclick="javascript:window.location.href='${endUrl}'"
+                                style="margin-top: 5px;position:absolute;">
+                            <i class="fa fa-pencil nav-icon"></i> 完结
+                        </button>
+                    </div>
+                </c:if>
+        </div>
+    </c:if>
     <jsp:include page="/WEB-INF/views/letter/read.jsp">
         <jsp:param name="content" value="${letter.content}"/>
     </jsp:include>

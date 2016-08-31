@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="description" content="">
+	<meta name="author" content="">
+	<link rel="shortcut icon" href="images/favicon.png">
+	<title>登录</title>
+	<!-- Bootstrap core CSS -->
+	<link href="js/bootstrap/dist/css/bootstrap.css" rel="stylesheet">
+	<link rel="stylesheet" href="fonts/font-awesome-4/css/font-awesome.min.css">
+	<!-- Custom styles for this template -->
+	<link href="css/style.css" rel="stylesheet" />	
+</head>
+
+<body class="texture">
+
+<div id="cl-wrapper" class="login-container">
+
+	<div class="middle-login">
+		<div class="block-flat">
+			<div class="header">							
+				<h3 class="text-center">解忧中心</h3>
+			</div>
+			<div>
+				<form id="loginForm" style="margin-bottom: 0px !important;" class="form-horizontal">
+					<div class="content">
+
+                            <div class="form-group" id="error_div" style="text-align: center">
+
+                            </div>
+							<div class="form-group">
+								<div class="col-sm-12">
+									<div class="input-group">
+                                        <label class="sr-only" for="username">Name</label>
+										<span class="input-group-addon"><i class="fa fa-user"></i></span>
+										<input type="text" placeholder="邮箱" id="username" class="form-control" required>
+									</div>
+								</div>
+							</div>
+							<div class="form-group">
+								<div class="col-sm-12">
+									<div class="input-group">
+                                        <label class="sr-only" for="password">Password</label>
+										<span class="input-group-addon"><i class="fa fa-lock"></i></span>
+										<input type="password" placeholder="密码" id="password" class="form-control" required>
+									</div>
+								</div>
+							</div>
+
+					</div>
+					<div class="foot">
+			 
+						<button class="btn btn-primary" data-dismiss="modal" type="submit">登录</button>
+                        <button class="btn btn-primary" data-dismiss="modal" type="reset" onclick="javascript:window.location.href='index.html'">取消</button>
+					</div>
+				</form>
+			</div>
+		</div>
+		<div class="text-center out-links"><a href="#">© 2016 Scot</a></div>
+	</div> 
+	
+</div>
+
+<script src="js/jquery.js"></script>
+<script type="text/javascript" src="js/behaviour/general.js"></script>
+<script>
+
+    $('#loginForm').submit(
+            function(e) {
+                e.preventDefault();
+                var email = $('#username').val();
+                var password = $('#password').val();
+                var errorMsg = "";
+                if(!isValidEmailAddress(email)) {
+                    errorMsg = "请输入正确的邮箱格式";
+                    $('#error_div').html(errorMsg);
+                    return;
+                }
+                var url = "./login?userName="+email+"&password="+password;
+                /*document.location = url;*/
+                $.ajax({
+                    type        : 'POST', // define the type of HTTP verb we want to use (POST for our form)
+                    url         : url, // the url where we want to POST
+                    success		: function(json){
+
+                        var data = eval('('+json+')' );
+                        if(data.isSuccess){
+                            document.location = "./letter/tusu";
+                        }else {
+                            errorMsg = "用户名密码错误";
+                            if(data.resultData == 0) {//未认证
+                                errorMsg = data.resultMsg;
+                                errorMsg += "<a href='#'>重发</a> ";
+                            }else if(data.resultData == 2) {//禁用
+                                errorMsg = data.resultMsg;
+                            }
+
+                            $('#error_div').html(errorMsg);
+                            return;
+                        }
+                    }
+                });
+            }
+    );
+
+    function isValidEmailAddress(emailAddress) {
+        var pattern = new RegExp(/^((([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+(\.([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+)*)|((\x22)((((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(([\x01-\x08\x0b\x0c\x0e-\x1f\x7f]|\x21|[\x23-\x5b]|[\x5d-\x7e]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(\\([\x01-\x09\x0b\x0c\x0d-\x7f]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]))))*(((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(\x22)))@((([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.)+(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.?$/i);
+        return pattern.test(emailAddress);
+    };
+
+</script>
+
+</body>
+</html>

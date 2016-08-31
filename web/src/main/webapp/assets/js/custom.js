@@ -140,14 +140,8 @@
 			var c_email = $('#c_email').val();
 			var response = $('#contact-form .ajax-response');
 			response.html('');
-			var pass1 = $('#c_password');  
+			var pass1 = $('#c_password');
             var pass2 = $('#c_confirm_password');           
-              
-			
-			var formData = {
-				'name'       : c_name,
-				'email'      : c_email
-			};
 
 			if (pass1.val()!= pass2.val()){
 				response.fadeIn(500);
@@ -158,21 +152,24 @@
 			if (( c_name== '' || c_email == '') || (!isValidEmailAddress(c_email) )) {
 				response.fadeIn(500);
 				response.html('<i class="fa fa-warning"></i> Please fix the errors and try again.');
+			}else {
+                var url = "./register?userName="+c_name+"&email="+c_email+"&password="+pass1.val();
+                /*document.location = url;*/
+                $.ajax({
+                    type        : 'POST', // define the type of HTTP verb we want to use (POST for our form)
+                    url         : url, // the url where we want to POST
+                    success		: function(json){
+                        var data = eval('('+json+')' );
+                        if(data.isSuccess) {
+                            document.location = "./m_login.html";
+                        }else{
+                            response.fadeIn(500);
+                            response.html('<i class="fa fa-warning"></i>'+data.resultMsg);
+                            return;
+                        }
+                    }
+                });
 			}
-
-			else {
-					 $.ajax({
-							type        : 'POST', // define the type of HTTP verb we want to use (POST for our form)
-							url         : 'assets/php/contact.php', // the url where we want to POST
-							data        : formData, // our data object
-							dataType    : 'json', // what type of data do we expect back from the server
-							encode      : true,
-							success		: function(res){
-											var ret = $.parseJSON(JSON.stringify(res));
-											response.html(ret.message).fadeIn(500);
-							}
-						});
-				}           
             	return false;
 			});
 

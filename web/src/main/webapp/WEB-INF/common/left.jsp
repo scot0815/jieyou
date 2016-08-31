@@ -30,6 +30,7 @@
                             <li id="tusu"><a href="${ctx}/letter/tusu">吐诉吧</a></li>
                             <li id="zhdReceive"><a href="${ctx}/letter/zhdReceive">杂货店来信</a></li>
                             <li id="consultTimeLine"><a href="${ctx}/letter/consultTimeLine">咨询时间轴</a></li>
+                            <li id="consultlist"><a href="${ctx}/letter/consultList">过往回忆</a></li>
                         </ul>
                     </li>
                     <li><a href="#"><i class="fa fa-smile-o"></i><span>我的回复</span></a>

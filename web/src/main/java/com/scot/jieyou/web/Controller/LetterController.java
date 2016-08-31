@@ -23,7 +23,6 @@ import java.util.List;
 @RequestMapping("/letter")
 public class LetterController {
 
-    public static Long userId = 3l;
     private final static String ACTIVE_JIEYOUBOX = "jieyouBox";
     private final static String ACTIVE_CONSULT_TIMELINE = "consultTimeLine";
     private final static String ACTIVE_ZHDRECEIVE = "zhdReceive";
@@ -39,9 +38,7 @@ public class LetterController {
      */
     @RequestMapping("/tusu")
     public ModelAndView tusu(HttpSession httpSession) {
-        //session暂无
-        Long userId = (Long)httpSession.getAttribute("userId");
-        userId = 4l;
+        Long userId = (Long)httpSession.getAttribute(CoreConstant.SESSION_USER_ID);
         boolean isExist = letterService.consultIsExist(userId);
 
         StringBuffer bf = new StringBuffer();
@@ -82,19 +79,18 @@ public class LetterController {
     @RequestMapping("/send")
     public ModelAndView writeLetter(LetterVo vo,HttpSession httpSession) {
 
-        //session暂无
-        //Long userId = (Long)httpSession.getAttribute("userId");
-        userId = 4l;
-        if(vo.getIsReply()) {//如果是回复
+        Long userId = (Long)httpSession.getAttribute(CoreConstant.SESSION_USER_ID);
+        if(vo.getIsReply()) {   //如果是回复
             vo.setReplyId(userId);
             vo.setLetterStatus(CoreConstant.LetterStatus.ALREADY_WRITE);
             vo.setLetterType(CoreConstant.LetterType.REPLY);
             vo.setIsInitial(false);
         }else{//咨询
             vo.setConsultId(userId);
-            if(vo.getIsInitial()) {//如果是首次咨询
-                vo.setLetterStatus(CoreConstant.LetterStatus.TO_BE_CLAIM);//
+            if(vo.getIsInitial()) { //如果是首次咨询
+                vo.setLetterStatus(CoreConstant.LetterStatus.TO_BE_CLAIM);
             }else {
+                vo.setIsInitial(false);
                 vo.setLetterStatus(CoreConstant.LetterStatus.ALREADY_WRITE);
             }
             vo.setLetterType(CoreConstant.LetterType.CONSULT);
@@ -103,7 +99,13 @@ public class LetterController {
         vo.setCreateUser(userId);
         vo.setUpdateUser(userId);
         letterService.writeLetter(vo);
-        return new ModelAndView("letter/writeLetter","status","success");
+
+        if(vo.getIsReply()) {
+            return new ModelAndView("redirect:/letter/replyList");
+        }else{
+            return new ModelAndView("redirect:/letter/consultTimeLine");
+        }
+
     }
 
     /**
@@ -122,11 +124,21 @@ public class LetterController {
      */
     @RequestMapping("/extractLetter")
     public ModelAndView extractLetter(HttpSession httpSession) {
-        //session暂无
-        //Long userId = (Long)httpSession.getAttribute("userId");
-        Long letterId = letterService.extractLetter(2l);
-        //转向信件查看页面
-        return new ModelAndView("redirect:/letter/letterView?letterId="+letterId+"&active="+ACTIVE_JIEYOUBOX);
+        Long userId = (Long)httpSession.getAttribute(CoreConstant.SESSION_USER_ID);
+        Long letterId = letterService.extractLetter(userId);
+        if(null != letterId) {
+            //转向信件查看页面
+            return new ModelAndView("redirect:/letter/letterView?letterId="+letterId
+                    +"&active="+ACTIVE_JIEYOUBOX
+                    +"&isReply=true");
+        }else {
+            ModelAndView modelAndView = new ModelAndView();
+            modelAndView.setViewName("/letter/letterMsg");
+            modelAndView.addObject("msg","暂时没有待认领的咨询，感谢您的支持。");
+            modelAndView.addObject("active",ACTIVE_JIEYOUBOX);
+            return modelAndView;
+        }
+
     }
 
     /**
@@ -151,11 +163,21 @@ public class LetterController {
      * @return
      */
     @RequestMapping("/replyList")
-    public ModelAndView replyList() {
-        LetterEntity entity = new LetterEntity();
-        entity.setReplyId(2l);
-        List<LetterBo> letters  = letterService.toReplyLetter(entity);
+    public ModelAndView replyList(HttpSession httpSession) {
+        Long userId = (Long)httpSession.getAttribute(CoreConstant.SESSION_USER_ID);
+        List<LetterBo> letters  = letterService.toReplyLetter(CoreConstant.LetterType.REPLY,userId);
         return new ModelAndView("letter/replyList","letters",letters);
+    }
+
+    /**
+     * 咨询列表
+     * @return
+     */
+    @RequestMapping("/consultList")
+    public ModelAndView consultList(HttpSession httpSession) {
+        Long userId = (Long)httpSession.getAttribute(CoreConstant.SESSION_USER_ID);
+        List<LetterBo> letters  = letterService.toReplyLetter(CoreConstant.LetterType.CONSULT,userId);
+        return new ModelAndView("letter/consultList","letters",letters);
     }
 
     /**
@@ -168,16 +190,21 @@ public class LetterController {
     @RequestMapping("/timeLine")
     public ModelAndView timeLine(Long initialId,String active,boolean isReply) {
         List<LetterBo> letters = null;
+        ModelAndView modelAndView = new ModelAndView();
         if(null != initialId) {
             letters  = letterService.timeLine(initialId);
+            modelAndView.setViewName("/letter/timeLine");
+            modelAndView.addObject("letters",letters);
+            modelAndView.addObject("initialId",initialId);
+            modelAndView.addObject("active",active);
+            modelAndView.addObject("isReply",isReply);
+            return modelAndView;
+        }else{
+            modelAndView.setViewName("/letter/letterMsg");
+            modelAndView.addObject("msg","时间轴失踪了，请稍后");
+            return modelAndView;
         }
-        ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName("/letter/timeLine");
-        modelAndView.addObject("letters",letters);
-        modelAndView.addObject("initialId",initialId);
-        modelAndView.addObject("active",active);
-        modelAndView.addObject("isReply",isReply);
-        return modelAndView;
+
     }
 
     /**
@@ -187,16 +214,23 @@ public class LetterController {
      */
     @RequestMapping("/consultTimeLine")
     public ModelAndView consultTimeLine(HttpSession httpSession) {
-        //session暂无
-        Long userId = (Long)httpSession.getAttribute("userId");
-        userId = 4l;
+        Long userId = (Long)httpSession.getAttribute(CoreConstant.SESSION_USER_ID);
         Long initialId = letterService.getInitialIdForConsult(userId);
-        StringBuffer bf = new StringBuffer()
-                .append("redirect:/letter/timeLine?")
-                .append("initialId="+initialId)
-                .append("&active="+ACTIVE_CONSULT_TIMELINE)
-                .append("&isReply="+false);
-        return new ModelAndView(bf.toString());
+        if(null != initialId) {
+            StringBuffer bf = new StringBuffer()
+                    .append("redirect:/letter/timeLine?")
+                    .append("initialId="+initialId)
+                    .append("&active="+ACTIVE_CONSULT_TIMELINE)
+                    .append("&isReply="+false);
+            return new ModelAndView(bf.toString());
+        }else{
+            ModelAndView modelAndView = new ModelAndView();
+            modelAndView.setViewName("/letter/letterMsg");
+            modelAndView.addObject("msg","您没有正在进行的咨询。");
+            modelAndView.addObject("active",ACTIVE_CONSULT_TIMELINE);
+            return modelAndView;
+        }
+
     }
 
     /**
@@ -205,9 +239,7 @@ public class LetterController {
      */
     @RequestMapping("/zhdReceive")
     public ModelAndView zhdReceive(HttpSession httpSession) {
-        //session暂无
-        Long userId = (Long)httpSession.getAttribute("userId");
-        userId = 4l;
+        Long userId = (Long)httpSession.getAttribute(CoreConstant.SESSION_USER_ID);
         LetterBo bo = letterService.getLastReceiveForConsult(userId);
         StringBuffer bf = new StringBuffer();
         if(null != bo) {
@@ -218,7 +250,7 @@ public class LetterController {
         }else {
             ModelAndView view = new ModelAndView();
             view.setViewName("/letter/letterMsg");
-            view.addObject("msg","杂货店暂时还没有回复，请耐心等待。");
+            view.addObject("msg","杂货店暂时没有对您的回复。");
             view.addObject("active",ACTIVE_ZHDRECEIVE);
             return view;
         }
@@ -238,6 +270,24 @@ public class LetterController {
         view.addObject("msg",msg);
         view.addObject("active",active);
         return view;
+    }
+
+    /**
+     * 信件完结
+     * @param initialId
+     * @param httpSession
+     * @return
+     */
+    @RequestMapping("/letterEnd")
+    public ModelAndView letterEnd(Long initialId,HttpSession httpSession) {
+        Long userId = (Long)httpSession.getAttribute(CoreConstant.SESSION_USER_ID);
+        letterService.letterEnd(initialId,userId);
+        StringBuffer bf = new StringBuffer()
+                .append("redirect:/letter/timeLine?")
+                .append("initialId="+initialId)
+                .append("&active="+ACTIVE_CONSULT_TIMELINE)
+                .append("&isReply="+false);
+        return new ModelAndView(bf.toString());
     }
 
 }

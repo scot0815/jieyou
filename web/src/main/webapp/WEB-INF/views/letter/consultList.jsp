@@ -9,7 +9,7 @@
     <meta name="author" content="">
     <link rel="shortcut icon" href="images\favicon.png">
 
-    <title>您的善意</title>
+    <title>过往回忆</title>
 
     <!-- Bootstrap core CSS -->
     <link href="${ctx}/js/bootstrap/dist/css/bootstrap.css" rel="stylesheet">
@@ -36,14 +36,14 @@
 
 	<div id="cl-wrapper">
         <jsp:include page="/WEB-INF/common/left.jsp">
-            <jsp:param name="active" value="replylist"/>
+            <jsp:param name="active" value="consultlist"/>
         </jsp:include>
 		<div class="container-fluid" id="pcont">
 			<div class="row">
 				<div class="col-md-12">
 					<div class="block-flat">
 						<div class="header">
-							<h3>善意回复</h3>
+							<h3>过往回忆</h3>
 						</div>
 						<div class="content">
 							<div class="table-responsive">
@@ -62,19 +62,9 @@
                                     <tbody>
                                         <c:forEach var="letter" items="${letters}" varStatus="status">
                                             <tr class="even gradeA">
-                                                <td title="进入时间轴">
-                                                    <a href="${ctx}/letter/timeLine?initialId=${letter.initialId}&isReply=true&active=replylist">
+                                                <td>
+                                                    <a href="${ctx}/letter/timeLine?initialId=${letter.initialId}&isReply=false&active=consultlist">
                                                         ${status.index+1}&nbsp;&nbsp;&nbsp;&nbsp;
-                                                            <%--（如果是咨询类型，并且是已回复或者是已认领（最新发起的咨询是已认领状态），为需要回复人回复）--%>
-                                                        <c:if test="${letter.maxLetterType == 1}">
-                                                            <c:if test="${letter.maxLetterStatus == 4 || letter.maxLetterStatus == 2}">
-                                                                <span class="label label-primary pull-right">New</span>
-                                                            </c:if>
-                                                        </c:if>
-
-                                                        <c:if test="${letter.maxLetterType == 2 && letter.maxLetterStatus == 3}">
-                                                            <span class="label label-primary pull-right">New</span>
-                                                        </c:if>
                                                     </a>
                                                 </td>
                                                 <td class="center">

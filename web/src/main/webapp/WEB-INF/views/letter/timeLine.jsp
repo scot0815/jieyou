@@ -34,7 +34,7 @@
     <!-- Custom styles for this template -->
     <link href="${ctx}/css/style.css" rel="stylesheet" />
 
-    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"></meta></head>
+    </head>
 
 <body>
 
@@ -47,23 +47,27 @@
     </jsp:include>
 
 <div class="container-fluid" id="pcont">
-    <div>
-        <c:set var="url" value="${ctx}/letter/writeView?id=${initialId}&isReply=${isReply}"/>
+    <c:if test="${letters[0].letterStatus != 5}">
+        <div>
+            <c:set var="url" value="${ctx}/letter/writeView?id=${initialId}&isReply=${isReply}"/>
+            <c:set var="endUrl" value="${ctx}/letter/letterEnd?initialId=${initialId}"/>
+            <c:if test="${!isReply}">
+                    <button data-toggle="modal" data-target="#mod-info" type="button" class="btn btn-primary"
+                            onclick="javascript:window.location.href='${endUrl}'"
+                            style="margin-top:5px;margin-right:10px;float: right">
+                        <i class="fa fa-pencil nav-icon"></i> 完结
+                    </button>
+            </c:if>
 
-        <c:if test="${!isReply}">
-                <button data-toggle="modal" data-target="#mod-info" type="button" class="btn btn-primary"
-                        onclick=""
-                        style="margin-top:5px;margin-right:10px;float: right">
-                    <i class="fa fa-pencil nav-icon"></i> 完结
-                </button>
+            <c:if test="${isReply}">
+            <button data-toggle="modal" data-target="#mod-info" type="button" class="btn btn-primary"
+                    onclick="javascript:window.location.href='${url}'"
+                    style="margin-top:5px;margin-right:10px;float: right">
+                <i class="fa fa-pencil nav-icon"></i> 回复
+            </button>
         </c:if>
-
-        <button data-toggle="modal" data-target="#mod-info" type="button" class="btn btn-primary"
-                onclick="javascript:window.location.href='${url}'"
-                style="margin-top:5px;margin-right:10px;float: right">
-            <i class="fa fa-pencil nav-icon"></i> 回复
-        </button>
-    </div>
+        </div>
+    </c:if>
     <div class="cl-mcont">
         <ul class="cbp_tmtimeline">
             <c:forEach var="letter" items="${letters}" varStatus="status">
